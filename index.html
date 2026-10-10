@@ -399,11 +399,11 @@
 <div class="sowhat">
   <p class="k">So what</p>
 
-  <p class="punch">Over three months these six changes remove <b>32,336 model turns</b>,
-  <b>53 hours of user waiting</b> and <b>$780</b>. They also attack 33.7 hours of fixed sleep
-  and 811 M characters of carried context.</p>
+  <p class="punch">Over three months these six changes remove <b>20,252 to 32,336 model
+  turns</b>, <b>33 to 53 hours of user waiting</b> and <b>$647 to $780</b>. They also attack
+  33.7 hours of fixed sleep and 811 M characters of carried context.</p>
   <p class="sub">They touch 362,199 distinct calls, 22% of all JavaScript, across 29,830 sites
-  and 4,380 users. That is 81% of everyone who ran one in these three months. The 32,336 turns are 2.0% of the turns that ran JavaScript.</p>
+  and 4,380 users. That is 81% of everyone who ran one in these three months. The low end is the harvest loops alone, which are firm. The high end adds the empty re-runs, which are a ceiling. Together they are 2.0% of the turns that ran JavaScript.</p>
 
   <div class="grid">
     <div class="cell">
@@ -435,17 +435,18 @@
     </div>
 
     <div class="cell">
-      <h5>Money &mdash; $780</h5>
+      <h5>Money &mdash; $647 to $780</h5>
       <table><tbody>
         <tr><td>32,336 tool calls at the measured $0.0110</td><td class="big">$356</td></tr>
         <tr><td>59.9 M characters of script, net of a 100-character tool call</td><td class="big">$176</td></tr>
         <tr><td><code>harvest_list</code> returning counts, not the store</td><td class="big">$248</td></tr>
         <tr><td>Not in the total: the context pool, which the $248 comes out of</td><td>$2,024</td></tr>
       </tbody></table>
-      <p>That last row is the opportunity, not a saving. These calls put 811 M characters into
-      context, and context is 89% of the JavaScript bill. Most of it is data the model asked for.
-      What a tool adds is a cap and a dedupe the author cannot forget, so the pool grows more
-      slowly. I have not measured how much of the 811 M is waste.</p>
+      <p>The $0.0110 is the billed average for each call. I cannot split it, so the three rows
+      above can overlap. The last row is the opportunity, not a saving. These calls put 811 M
+      characters into context, and context is 89% of the JavaScript bill. Most of it is data the
+      model asked for. What a tool adds is a cap and a dedupe the author cannot forget, so the
+      pool grows more slowly. I have not measured how much of the 811 M is waste.</p>
     </div>
 
     <div class="cell">
