@@ -377,7 +377,7 @@
       <td class="n">empty-result marking<span class="tag">on execute_javascript</span></td>
       <td class="w"><code>[]</code> from a dead selector. The model sees the empty, but not the reason.</td>
       <td>59,039</td><td>3.6%</td><td>34,237</td><td>3,314</td><td>61%</td><td>all of them</td>
-      <td class="w">17,365 blind re-runs of the identical script.</td>
+      <td class="w">12,387 re-runs that come back empty again.</td>
     </tr>
     <tr>
       <td class="n">pattern<span class="tag">on get_page_text</span></td>
@@ -399,49 +399,51 @@
 <div class="sowhat">
   <p class="k">So what</p>
 
-  <p class="punch">Over three months these six changes save <b>96 hours of user waiting</b>,
-  <b>37,617 model turns</b> and <b>$838</b>. They also surface 5,320 failures the model is
-  told are successes.</p>
+  <p class="punch">Over three months these six changes remove <b>32,336 model turns</b>,
+  <b>53 hours of user waiting</b> and <b>$780</b>. They also attack 33.7 hours of fixed sleep
+  and 811 M characters of carried context.</p>
   <p class="sub">They touch 362,199 distinct calls, 22% of all JavaScript, across 29,830 sites
-  and 4,380 users. That is 81% of everyone who has ever run a script.</p>
+  and 4,380 users. That is 81% of everyone who ran one in these three months.</p>
 
   <div class="grid">
     <div class="cell">
-      <h5>Time &mdash; 96 hours</h5>
+      <h5>Time</h5>
       <table><tbody>
-        <tr><td>Round trips removed, 37,617 at the measured 5.95 s</td><td class="big">62.2 h</td></tr>
-        <tr><td>Fixed sleep <code>wait_for</code> replaces</td><td class="big">33.7 h</td></tr>
+        <tr><td>Round trips removed, 32,336 at the measured 5.95 s</td><td class="big">53.4 h</td></tr>
+        <tr><td>Fixed sleep <code>wait_for</code> draws from</td><td class="big">33.7 h</td></tr>
         <tr><td>Not in the total: sleep inside the harvest scripts</td><td>14.1 h</td></tr>
         <tr><td>Not in the total: <code>get_links</code> script generation</td><td>27.0 h</td></tr>
       </tbody></table>
-      <p>Nothing is counted twice. <code>harvest_list</code> and <code>wait_for</code> match
-      zero calls in common, asserted in the checker. The two excluded figures would add 41 hours.</p>
+      <p>The 33.7 hours is the whole fixed sleep, not the saving. <code>wait_for</code> returns
+      when the selector appears, so it removes the excess only, and this table cannot measure the
+      excess. The 53.4 hours is firm: those round trips do not happen.</p>
     </div>
 
     <div class="cell">
-      <h5>Turns &mdash; 37,617</h5>
+      <h5>Turns &mdash; 32,336</h5>
       <table><tbody>
         <tr><td>Harvest loops collapsed into one call</td><td class="big">20,252</td></tr>
-        <tr><td>Blind re-runs after an empty result</td><td class="big">17,365</td></tr>
-        <tr><td>Share of the 1,609,725 turns that ran JavaScript</td><td>2.3%</td></tr>
+        <tr><td>Re-runs after an empty that come back empty again</td><td class="big">12,387</td></tr>
+        <tr><td>Counted in both, removed once</td><td>&minus;303</td></tr>
         <tr><td>Worst single loop</td><td>142 calls, one page</td></tr>
       </tbody></table>
-      <p>The harvest figure survived an adversarial test: a repeat counts only if the loop stayed
-      on one page. That cut it from 33,258 to 20,252. The re-run figure is an upper bound, since
-      a better error message may not stop every retry.</p>
+      <p>A stricter test cut the harvest figure from 33,258 to 20,252. A repeat counts only if
+      the loop stayed on one page. And 27.8% of re-runs after an empty do succeed, so the agent
+      was polling, not stuck. I keep only the 12,387 that came back empty again.</p>
     </div>
 
     <div class="cell">
-      <h5>Money &mdash; $838</h5>
+      <h5>Money &mdash; $780</h5>
       <table><tbody>
-        <tr><td>37,617 tool calls at the measured $0.0110</td><td class="big">$414</td></tr>
+        <tr><td>32,336 tool calls at the measured $0.0110</td><td class="big">$356</td></tr>
         <tr><td>59.9 M characters of script no longer typed</td><td class="big">$176</td></tr>
         <tr><td><code>harvest_list</code> returning counts, not the store</td><td class="big">$248</td></tr>
         <tr><td>Not in the total: carried context these signals create today</td><td>$2,024</td></tr>
       </tbody></table>
-      <p>That last row is the real prize. These calls put 811 M characters into context, and
-      context is 89% of the JavaScript bill. A hand-written script returns whatever it returns.
-      A tool returns a known, bounded shape every time, so the pool stops growing with use.</p>
+      <p>That last row is the opportunity, not a saving. These calls put 811 M characters into
+      context, and context is 89% of the JavaScript bill. Most of it is data the model asked for.
+      What a tool adds is a cap and a dedupe the author cannot forget, so the pool grows more
+      slowly. I have not measured how much of the 811 M is waste.</p>
     </div>
 
     <div class="cell">
@@ -450,13 +452,13 @@
         <tr><td><code>wait_for</code> &mdash; sleep then read, fails today</td><td class="big">11.6%</td></tr>
         <tr><td><code>harvest_list</code> &mdash; scroll loops</td><td class="big">8.8%</td></tr>
         <tr><td>Corpus baseline</td><td>6.2%</td></tr>
-        <tr><td>Sentinels returned as success, from 866 users</td><td class="big">5,320</td></tr>
+        <tr><td>Ambiguous one-word results, from 866 users</td><td class="big">5,320</td></tr>
       </tbody></table>
-      <p>The two slowest signals also fail most often. Form reads and page grep sit below the
-      baseline and I claim no reliability win there. The 5,320 are calls returning <code>0</code>,
-      <code>false</code> or <code>none</code> as a successful result. Those are the ones the model
-      cannot spot. An empty it can: 44,432 of the 59,039 return a literal <code>[]</code>. What it
-      cannot tell is whether the page was empty or the selector was wrong.</p>
+      <p>The two signals that sleep longest also fail most often. Form reads and page grep are
+      below the baseline, and I claim no reliability win there. The model spots an empty easily:
+      44,432 of the 59,039 return a literal <code>[]</code>. What it cannot tell is whether the
+      page was empty or the selector was wrong. The 5,320 returning <code>0</code> or
+      <code>false</code> are harder, because those are sometimes the right answer.</p>
     </div>
   </div>
 </div>
