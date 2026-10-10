@@ -359,7 +359,7 @@
       <td class="n">get_links<span class="tag">new tool</span></td>
       <td class="w"><code>a[href]</code>, then <code>.map</code>, then <code>.filter</code>. Written again each time.</td>
       <td>199,330</td><td>12.1%</td><td>107,618</td><td>3,562</td><td>66%</td><td>7.5%</td>
-      <td class="w">24.3 M characters of authoring. About 27 hours.</td>
+      <td class="w">24.3 M characters of authoring.</td>
     </tr>
     <tr>
       <td class="n">read_form<span class="tag">new tool</span></td>
@@ -371,11 +371,11 @@
       <td class="n">wait_for<span class="tag">on execute_javascript</span></td>
       <td class="w"><code>setTimeout(…, 1500)</code>, then read. A blind guess at how long the page needs.</td>
       <td>21,036</td><td>1.3%</td><td>11,624</td><td>1,039</td><td>19%</td><td><b>11.6%</b></td>
-      <td class="w">33.7 hours of fixed sleep, whatever the page actually needed.</td>
+      <td class="w">Part of 33.7 hours of fixed sleep. It returns when the selector appears.</td>
     </tr>
     <tr>
       <td class="n">empty-result marking<span class="tag">on execute_javascript</span></td>
-      <td class="w"><code>[]</code> from a dead selector. The model sees the empty, but not the reason.</td>
+      <td class="w"><code>[]</code> and no reason. The page was empty, or the selector was wrong.</td>
       <td>59,039</td><td>3.6%</td><td>34,237</td><td>3,314</td><td>61%</td><td>all of them</td>
       <td class="w">12,387 re-runs that come back empty again.</td>
     </tr>
@@ -403,20 +403,22 @@
   <b>53 hours of user waiting</b> and <b>$780</b>. They also attack 33.7 hours of fixed sleep
   and 811 M characters of carried context.</p>
   <p class="sub">They touch 362,199 distinct calls, 22% of all JavaScript, across 29,830 sites
-  and 4,380 users. That is 81% of everyone who ran one in these three months.</p>
+  and 4,380 users. That is 81% of everyone who ran one in these three months. The 32,336 turns are 2.0% of the turns that ran JavaScript.</p>
 
   <div class="grid">
     <div class="cell">
-      <h5>Time</h5>
+      <h5>Time &mdash; 53.4 hours</h5>
       <table><tbody>
-        <tr><td>Round trips removed, 32,336 at the measured 5.95 s</td><td class="big">53.4 h</td></tr>
-        <tr><td>Fixed sleep <code>wait_for</code> draws from</td><td class="big">33.7 h</td></tr>
+        <tr><td>Harvest loops, 20,252 round trips</td><td class="big">33.5 h</td></tr>
+        <tr><td>Empty re-runs, 12,084 round trips, a ceiling</td><td class="big">20.0 h</td></tr>
+        <tr><td>Not in the total: fixed sleep <code>wait_for</code> shortens</td><td>33.7 h</td></tr>
         <tr><td>Not in the total: sleep inside the harvest scripts</td><td>14.1 h</td></tr>
         <tr><td>Not in the total: <code>get_links</code> script generation</td><td>27.0 h</td></tr>
       </tbody></table>
-      <p>The 33.7 hours is the whole fixed sleep, not the saving. <code>wait_for</code> returns
-      when the selector appears, so it removes the excess only, and this table cannot measure the
-      excess. The 53.4 hours is firm: those round trips do not happen.</p>
+      <p>The harvest share, 33.5 hours, is firm: one call replaces the loop. The re-run share,
+      20.0 hours, is a ceiling. Those retries returned nothing, but a marker may not stop each
+      one. Script generation counts as money but not as time. The token price is direct, while
+      the 4.0 ms per character behind the 27 hours is a weak regression.</p>
     </div>
 
     <div class="cell">
@@ -436,9 +438,9 @@
       <h5>Money &mdash; $780</h5>
       <table><tbody>
         <tr><td>32,336 tool calls at the measured $0.0110</td><td class="big">$356</td></tr>
-        <tr><td>59.9 M characters of script no longer typed</td><td class="big">$176</td></tr>
+        <tr><td>59.9 M characters of script, net of a 100-character tool call</td><td class="big">$176</td></tr>
         <tr><td><code>harvest_list</code> returning counts, not the store</td><td class="big">$248</td></tr>
-        <tr><td>Not in the total: carried context these signals create today</td><td>$2,024</td></tr>
+        <tr><td>Not in the total: the context pool, which the $248 comes out of</td><td>$2,024</td></tr>
       </tbody></table>
       <p>That last row is the opportunity, not a saving. These calls put 811 M characters into
       context, and context is 89% of the JavaScript bill. Most of it is data the model asked for.
@@ -455,8 +457,8 @@
         <tr><td>Ambiguous one-word results, from 866 users</td><td class="big">5,320</td></tr>
       </tbody></table>
       <p>The two signals that sleep longest also fail most often. Form reads and page grep are
-      below the baseline, and I claim no reliability win there. The model spots an empty easily:
-      44,432 of the 59,039 return a literal <code>[]</code>. What it cannot tell is whether the
+      below the baseline, and I claim no reliability win there. The model spots an empty easily. All 59,039 return
+      <code>[]</code>, <code>null</code>, <code>undefined</code>, <code>{}</code> or nothing at all. What it cannot tell is whether the
       page was empty or the selector was wrong. The 5,320 returning <code>0</code> or
       <code>false</code> are harder, because those are sometimes the right answer.</p>
     </div>
