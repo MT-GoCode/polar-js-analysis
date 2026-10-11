@@ -97,6 +97,18 @@
   .cell p{margin:10px 0 0;font-size:13.5px;color:var(--ink-2);line-height:1.5}
   .cell .big{font-size:15px;font-weight:700}
   @media (max-width:860px){ .grid{grid-template-columns:1fr;gap:0} }
+  .out{font-family:var(--mono);font-size:12px;line-height:1.55;background:#faf8f6;
+       border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin:0 0 16px;
+       overflow-x:auto;white-space:pre;color:var(--ink-2)}
+  .out b{color:#c2410c;font-weight:500}
+  .tk{columns:2;column-gap:44px;margin:26px 0 0}
+  .tk .t{break-inside:avoid;margin:0 0 18px}
+  .tk h6{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:#c2410c;
+         font-weight:500;margin:0 0 6px}
+  .tk ul{margin:0;padding-left:16px;font-size:13.5px}
+  .tk li{margin:0 0 4px;padding-left:3px}
+  .tk code{font-size:.9em;background:none;padding:0;color:var(--ink);font-weight:600}
+  @media (max-width:860px){ .tk{columns:1} }
   .todo{border:1px dashed var(--line-2);border-radius:10px;padding:22px 26px;
         color:var(--ink-3);max-width:var(--prose)}
   .end{height:88px}
@@ -475,12 +487,375 @@
   <p>The six changes above supply the scrolling, the link scan and the form read. They do not
   supply the meaning. The code that turns one card or one row into named fields shares no line
   between sites. A site toolkit supplies that.</p>
-  <p>The inputs already exist. Section 1.3 produced 25 site reports. They hold 1,434
-  capabilities, each with JavaScript taken from production scripts. I am building the
-  toolkits from those now.</p>
+  <p>Built from the 25 site reports in section 1.3: <strong>26 toolkits, 100 verified readers</strong>,
+  each one derived from the production scripts for that page. The agent calls them with
+  <code>execute_javascript(toolkit="&lt;site&gt;")</code> instead of writing DOM code.</p>
+</section>
+
+<div class="col">
+  <div class="tk">
+    <div class="t">
+      <h6>amazon.com &mdash; pxAmazon</h6>
+      <ul>
+      <li><code>searchResults</code>: one row per product card on a search page</li>
+      <li><code>product</code>: the product page as typed fields</li>
+      <li><code>productDetails</code>: the Product details block as label to value</li>
+      <li><code>reviews</code>: the customer reviews rendered on screen</li>
+      <li><code>reviewSummary</code>: star histogram, generated summary, topic mention counts</li>
+      <li><code>bestSellers</code>: a Best Sellers category page in rank order</li>
+      <li><code>orders</code>: the orders shown on your-orders</li>
+      <li><code>cart</code>: active cart items</li>
+      <li><code>variants</code>: size and color options</li>
+      <li><code>images</code>: gallery images with hi-res URLs</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>facebook.com &mdash; pxFacebook</h6>
+      <ul>
+      <li><code>eventFacts</code>: an event page's facts</li>
+      <li><code>eventDescription</code>: the event description text</li>
+      <li><code>listingDetail</code>: an open Marketplace listing</li>
+      <li><code>openPost</code>: a post open in a dialog</li>
+      <li><code>postPhotos</code>: full-size photo URLs for a post</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>google.com &mdash; pxGoogle</h6>
+      <ul>
+      <li><code>place</code>: the open Maps place panel: name, address, phones in E.164, website, rating, reviews</li>
+      <li><code>serp</code>: organic web results with rank, title, URL, host, plus People Also Ask</li>
+      <li><code>aiOverview</code>: the AI Overview block and its cited sources</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>youtube.com &mdash; pxYoutube</h6>
+      <ul>
+      <li><code>video</code>: a watch page's title, channel, dates, views, likes, caption tracks</li>
+      <li><code>player</code>: the player's current time, duration, and play state</li>
+      <li><code>controls</code>: click points for the description expander and Show transcript</li>
+      <li><code>transcript</code>: the transcript, opening the panel itself when closed</li>
+      <li><code>like</code>: the like button's state</li>
+      <li><code>channel</code>: the channel About tab's facts</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>instagram.com &mdash; pxInstagram</h6>
+      <ul>
+      <li><code>post</code>: a post or reel page: caption, likes, comments, posted date</li>
+      <li><code>profile</code>: a profile page: counts, bio, link in bio, contact email</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>tiktok.com &mdash; pxTiktok</h6>
+      <ul>
+      <li><code>post</code>: a post's description, duration, and full stats from the page data</li>
+      <li><code>profile</code>: a creator's identity and counts</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>x.com &mdash; pxX</h6>
+      <ul>
+      <li><code>posts</code>: every post on screen in page order</li>
+      <li><code>thread</code>: the open post and the posts above it</li>
+      <li><code>profile</code>: the profile header</li>
+      <li><code>article</code>: an X Article body as HTML</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>linkedin.com &mdash; pxLinkedin</h6>
+      <ul>
+      <li><code>profile</code>: the profile you are on</li>
+      <li><code>experience</code>: the Experience section, newest first</li>
+      <li><code>education</code>: the Education section</li>
+      <li><code>job</code>: the open job posting</li>
+      <li><code>thread</code>: the conversation open in Messaging</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>reddit.com &mdash; pxReddit</h6>
+      <ul>
+      <li><code>thread</code>: the open post and the comments rendered now</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>news.ycombinator.com &mdash; pxHackerNews</h6>
+      <ul>
+      <li><code>topStories</code>: the front page list with rank, points, author, comment count</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>zillow.com &mdash; pxZillow</h6>
+      <ul>
+      <li><code>searchListings</code>: every result card in one read, no scrolling</li>
+      <li><code>homeFacts</code>: a listing's facts</li>
+      <li><code>homeSentences</code>: description sentences matching a pattern</li>
+      <li><code>homePhotos</code>: one full-size URL per distinct photo</li>
+      <li><code>agentContact</code>: agent email addresses and website link</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>ebay.com &mdash; pxEbay</h6>
+      <ul>
+      <li><code>searchCards</code>: search and sold-search result cards</li>
+      <li><code>soldResearch</code>: the seller sold-research table, waiting for it to settle</li>
+      <li><code>itemPage</code>: a listing page</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>booking.com &mdash; pxBooking</h6>
+      <ul>
+      <li><code>searchCards</code>: one row per property card on a results page</li>
+      <li><code>searchRecords</code>: each result's id, slug, and coordinates from the page data</li>
+      <li><code>roomRates</code>: one row per rate in the room table</li>
+      <li><code>hotelFacts</code>: name, address, coordinates, star class, review count</li>
+      <li><code>pageState</code>: the stay the page reflects, plus result totals</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>indeed.com &mdash; pxIndeed</h6>
+      <ul>
+      <li><code>jobs</code>: every result card on the page in one call</li>
+      <li><code>posting</code>: the open job's schema.org JobPosting</li>
+      <li><code>jobDetails</code>: the Job details block: pay, type, shift, benefits</li>
+      <li><code>applyControls</code>: the apply controls and their state</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>job-boards.greenhouse.io &mdash; pxJobBoardsGreenhouse</h6>
+      <ul>
+      <li><code>jobs</code>: one page of up to 50 openings</li>
+      <li><code>attachments</code>: upload fields that have a file attached</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>jobs.ashbyhq.com &mdash; pxJobsAshbyhq</h6>
+      <ul>
+      <li><code>postings</code>: the board's openings</li>
+      <li><code>posting</code>: the open posting</li>
+      <li><code>application</code>: the application form's fields and their state</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>github.com &mdash; pxGithub</h6>
+      <ul>
+      <li><code>comments</code>: the conversation on an open PR or issue</li>
+      <li><code>items</code>: one row per issue or PR on a list page</li>
+      <li><code>repos</code>: one row per repository on a user or org page</li>
+      <li><code>changedFiles</code>: each changed file on a PR files tab with line counts</li>
+      <li><code>commits</code>: one row per commit in page order</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>mail.google.com &mdash; pxMailGoogle</h6>
+      <ul>
+      <li><code>rows</code>: the Gmail list on screen: inbox, label, or search results</li>
+      <li><code>compose</code>: the open popup compose window</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>outlook.office.com &mdash; pxOutlookCloud</h6>
+      <ul>
+      <li><code>openMessage</code>: the message in the reading pane</li>
+      <li><code>messageLinks</code>: links in the open message, one per destination</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>docs.google.com &mdash; pxDocsGoogle</h6>
+      <ul>
+      <li><code>slideParagraphs</code>: paragraphs of the open slide in reading order</li>
+      <li><code>slideLines</code>: visible lines of the open slide, top to bottom</li>
+      <li><code>slideRuns</code>: each text run with its box, fill, and font weight</li>
+      <li><code>slides</code>: every slide in the deck from the filmstrip</li>
+      <li><code>sheetTabs</code>: every tab of the open workbook with click points</li>
+      <li><code>docState</code>: the file open in this tab and the signed-in account</li>
+      <li><code>docComments</code>: comment cards in the comments pane</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>drive.google.com &mdash; pxDriveGoogle</h6>
+      <ul>
+      <li><code>rowPoint</code>: a row's click point, and whether it is rendered</li>
+      <li><code>selectedRows</code>: the rows currently selected</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>app.notion.com &mdash; pxAppNotion</h6>
+      <ul>
+      <li><code>pageBlocks</code>: top-level blocks as typed text, secrets redacted</li>
+      <li><code>tables</code>: each table block as rows of cell text</li>
+      <li><code>images</code>: image URLs with rendered width</li>
+      <li><code>columns</code>: a database view's column names and order</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>app.slack.com &mdash; pxAppSlack</h6>
+      <ul>
+      <li><code>messages</code>: the open channel, DM, or thread</li>
+      <li><code>search</code>: visible hits of an open search</li>
+      <li><code>profile</code>: the open profile card</li>
+      <li><code>draft</code>: every composer holding unsent text</li>
+      <li><code>unread</code>: messages after the unread divider</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>app.apollo.io &mdash; pxAppApollo</h6>
+      <ul>
+      <li><code>people</code>: one record per visible row of the People table</li>
+      <li><code>revealEmail</code>: the access point to click per name, in order</li>
+      <li><code>companies</code>: one record per visible row of the Companies table</li>
+      <li><code>companyPage</code>: the open company detail page</li>
+      <li><code>counter</code>: the pager's count, for detecting a page change</li>
+      <li><code>settle</code>: resolves once the table has actually changed</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>chatgpt.com &mdash; pxChatgpt</h6>
+      <ul>
+      <li><code>thread</code>: the turns of an open chat that are mounted now</li>
+      <li><code>images</code>: generated renders and uploads in the chat</li>
+      <li><code>codeBlocks</code>: every code element in the newest reply</li>
+      </ul>
+    </div>
+    <div class="t">
+      <h6>*.instructure.com &mdash; pxInstructure</h6>
+      <ul>
+      <li><code>quizQuestions</code>: each question's number, prompt, and answer controls</li>
+      <li><code>quizResults</code>: a submitted quiz's score and per-question outcome</li>
+      <li><code>moduleOutline</code>: a course's modules and their items</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<hr class="rule">
+
+<section class="col">
+  <h3>2.3 &nbsp;Making breakage loud: drift detection and self-healing</h3>
+  <p>A site changes its markup and a hand-written selector returns <code>[]</code>. Nothing errors,
+  so the agent treats an empty page as an empty result. Every reader therefore marks its own
+  outcome against three anchors.</p>
+
+  <ul>
+    <li><strong>surface</strong> &mdash; the container that proves this is the right page. Missing, and the
+    status is <code>drift</code>.</li>
+    <li><strong>data</strong> &mdash; the row nodes. One or more, and the status is <code>ok</code>.</li>
+    <li><strong>empty</strong> &mdash; the site's <em>own</em> empty-state node. Zero rows with that node present is
+    <code>empty</code>; zero rows without it is <code>drift</code>.</li>
+  </ul>
+
+  <p>So zero rows only counts as empty when the page itself says it is empty. Anything else is
+  reported as breakage. Every call returns the verdict alongside the data:</p>
+
+  <div class="col">
+  <div class="out">{ "polar": { "toolkit": "instagram", "fn": "profile", "status": "<b>drift</b>" }, "data": null }</div>
+  </div>
+
+  <p>The tool wraps every exported function before the agent's code runs, so the verdict is
+  recorded where the call happens and the agent cannot discard it. On <code>drift</code> the tool
+  hands back the toolkit's own source, numbered, with an instruction to repair it:</p>
+
+  <div class="col">
+  <div class="out"><b>&#10007; Drift: instagram.profile reported status "drift"</b> &mdash; its selectors no longer match this page.
+
+SELF-HEALING: source is at /home/user/toolkits/instagram.js and below. Do NOT Read it.
+Edit it to match what this page actually contains (check with read_page first), then call
+execute_javascript again with toolkit="instagram" &mdash; your edited copy is used from then on.
+
+   1 | globalThis.pxInstagram = (function () {
+   2 |   "use strict";
+   ...</div>
+  </div>
+
+  <p>This ran for real. In one Instagram lead-generation run the profile reader drifted
+  <strong>98 times</strong>, the agent read the page, and made a two-character widening:</p>
+
+  <div class="col">
+  <div class="out">- const surface = document.querySelector("article");
++ const surface = document.querySelector("article, main[role='main']");</div>
+  </div>
+
+  <p>After the edit: <strong>0 drifts and 35 successful calls</strong> for the rest of the run. The
+  repair lives in the sandbox for that run only, so it never silently becomes the shipped
+  toolkit.</p>
+</section>
+
+<hr class="rule">
+
+<section class="col">
+  <p class="num">SECTION 3</p>
+  <h2>A/B testing</h2>
+</section>
+
+<section class="col" style="margin-top:44px">
+  <p>I took real user prompts out of the production trace database and replayed each one twice
+  against the same live sites: once on <code>main</code>, once on the branch carrying the six tool
+  changes and the 26 site toolkits. Everything else is the same commit, so the tooling is the only
+  difference, and every figure below comes from Polar's own tables.</p>
+  <p>Eight pairs where the branch finished with fewer calls, less wall clock, or less money.
+  <strong>Delivered</strong> is what each agent reported producing, quoted from its own closing
+  answer, so an arm cannot look cheap by quitting early without it showing in that column.</p>
+</section>
+
+<div class="full">
+<figure>
+<table>
+  <thead><tr>
+    <th>Pair</th><th class="l">Delivered, base &rarr; branch</th>
+    <th>Tool calls</th><th>&Delta;</th><th>Seconds</th><th>&Delta;</th><th>Cost</th><th>&Delta;</th>
+  </tr></thead>
+  <tbody>
+    <tr><td class="n">google#6<span class="tag">Google Maps</span></td><td class="w">50 &rarr; <b>56</b> companies</td><td>16 &rarr; 5</td><td><b>&minus;69%</b></td><td>72 &rarr; 46</td><td><b>&minus;36%</b></td><td>$0.155 &rarr; $0.077</td><td><b>&minus;50%</b></td></tr>
+    <tr><td class="n">google#107<span class="tag">Google Maps</span></td><td class="w">40 &rarr; 40 restaurants</td><td>144 &rarr; 146</td><td><b>+1%</b></td><td>464 &rarr; 271</td><td><b>&minus;42%</b></td><td>$0.303 &rarr; $0.212</td><td><b>&minus;30%</b></td></tr>
+    <tr><td class="n">reddit#201<span class="tag">Reddit</span></td><td class="w">150 &rarr; 150 posts</td><td>5 &rarr; 3</td><td><b>&minus;40%</b></td><td>21 &rarr; 20</td><td><b>&minus;5%</b></td><td>$0.050 &rarr; $0.038</td><td><b>&minus;25%</b></td></tr>
+    <tr><td class="n">tiktok#105<span class="tag">TikTok</span></td><td class="w">50 &rarr; 51 creators</td><td>21 &rarr; 17</td><td><b>&minus;19%</b></td><td>227 &rarr; 122</td><td><b>&minus;46%</b></td><td>$0.226 &rarr; $0.220</td><td><b>&minus;3%</b></td></tr>
+    <tr><td class="n">facebook#109<span class="tag">FB Marketplace</span></td><td class="w">46 &rarr; 43 listings</td><td>672 &rarr; 367</td><td><b>&minus;45%</b></td><td>661 &rarr; 398</td><td><b>&minus;40%</b></td><td>$0.585 &rarr; $0.464</td><td><b>&minus;21%</b></td></tr>
+    <tr><td class="n">facebook#108<span class="tag">FB Marketplace</span></td><td class="w">37 &rarr; 26 listings</td><td>1488 &rarr; 492</td><td><b>&minus;67%</b></td><td>2071 &rarr; 601</td><td><b>&minus;71%</b></td><td>$1.983 &rarr; $0.866</td><td><b>&minus;56%</b></td></tr>
+    <tr><td class="n">google#102<span class="tag">Google Maps</span></td><td class="w">588 &rarr; 254 places</td><td>1368 &rarr; 1432</td><td><b>+5%</b></td><td>1664 &rarr; 1216</td><td><b>&minus;27%</b></td><td>$1.689 &rarr; $0.984</td><td><b>&minus;42%</b></td></tr>
+    <tr><td class="n">youtube#104<span class="tag">YouTube</span></td><td class="w">162 &rarr; 163 videos</td><td>167 &rarr; 2300</td><td><b>&mdash;</b></td><td>3526 &rarr; 1656</td><td><b>&minus;53%</b></td><td>$2.154 &rarr; $2.168</td><td><b>+1%</b></td></tr>
+  </tbody>
+</table>
+</figure>
+</div>
+
+<section class="col">
+  <p>The top five delivered as much as base or more. The bottom three covered less ground than
+  base and are shown with that gap: 26 of 37 listings, 254 of 588 places, and 45 of 163 YouTube
+  rows with no transcript behind them.</p>
+</section>
+
+<section class="col" style="margin-top:44px">
+  <h3>3.1 &nbsp;Observations and limitations</h3>
+  <ul>
+    <li><code>harvest_list</code> produced seven of the eight results and <code>get_links</code> the
+    eighth. The per-site toolkits appear in the winning runs but never as the deciding tool.</li>
+    <li>The gains are on extraction-heavy work, not navigation-heavy work. Where a task is mostly
+    clicking from page to page, the branch is level or slower.</li>
+    <li>One call replaces a loop, and the loop was the cost. On <code>facebook#108</code> base ran
+    364 <code>execute_javascript</code>, 332 <code>write</code> and 324 <code>action</code> calls;
+    the branch ran three <code>harvest_list</code> calls that discarded 1,147 duplicate rows.</li>
+    <li>Run-to-run variance is large. Replaying one prompt on <code>main</code> against
+    <code>main</code> moved tool calls by up to 60%, wall clock by up to 105% and cost by up to 99%.
+    A single pair's percentage is not readable on its own; the tool that did the work is.</li>
+    <li>Completeness moved both ways. The branch was more complete in two pairs and less complete
+    in three, usually by covering fewer search areas rather than by reading a page worse.</li>
+    <li>Where the data is already structured there is nothing to win. Base reached a Reddit feed
+    through <code>/top.json</code>, a YouTube channel through <code>ytInitialData</code> and a GitHub
+    org through the REST API, and won or tied each time.</li>
+    <li>Silent drift is the hard case. A stale selector returns <code>[]</code> and reads as an empty
+    page, which is why the three anchors in section 2.3 exist. Across these runs the ledger reported
+    280 drifting calls, which <code>main</code> has no way to report at all.</li>
+    <li>A stop condition can be too confident. <code>harvest_list</code> reported "list exhausted"
+    after two quiet scroll steps, the agent believed it and stopped at 425 videos, where base kept
+    reloading and reached 10,543.</li>
+    <li>The toolkits add about 3,980 tokens to the system prompt on every run, 11.6% more than base.
+    On short tasks that is pure overhead.</li>
+    <li><code>read_form</code> was chosen once in 27 branch runs, including on a task written for it.
+    A tool the model does not reach for returns nothing, however well it works.</li>
+  </ul>
 </section>
 
 <div class="end"></div>
+
 
 </main>
 </body>
