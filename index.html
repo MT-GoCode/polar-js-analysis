@@ -100,11 +100,11 @@
   /* Full-bleed dark band. Breaks out of `main` to the viewport edge, then re-aligns its
      own contents to the same 1000px column the tables use. */
   .strip{background:#141317;color:#e9e7e4;margin-inline:calc(50% - 50vw);width:100vw;
-         padding:56px 0 50px;margin-block:40px}
+         padding:44px 0 40px;margin-block:40px}
   .strip-in{max-width:var(--page);margin-inline:auto;padding-inline:var(--gut)}
-  .strip .so{font-family:var(--mono);font-size:clamp(20px,2.3vw,31px);line-height:1.25;
+  .strip .so{font-family:var(--mono);font-size:clamp(19px,2.1vw,29px);line-height:1.25;
              letter-spacing:.17em;text-transform:uppercase;font-weight:500;color:#ff8d55;
-             text-align:center;margin:0 0 38px;text-wrap:balance}
+             text-align:center;margin:0 0 28px;text-wrap:balance}
   .strip .punch{margin:0 auto;max-width:72ch;font-size:21px;line-height:1.45;color:#fbfaf9;
                 font-weight:500;letter-spacing:-.008em;text-align:center}
   .strip .punch b{font-weight:700;color:#ffb184}
@@ -116,15 +116,15 @@
   .strip .cell p{color:#a9a5a1}
   /* Pain-point bullets. One statistic per line, sized to fit a laptop viewport without
      scrolling, so the whole band reads as a single slide. */
-  .pains{list-style:none;margin:0 auto;padding:0;max-width:86ch;
-         display:flex;flex-direction:column;gap:clamp(10px,1.5vh,20px)}
-  .pains li{display:grid;grid-template-columns:minmax(8.5em,auto) 1fr;gap:0 26px;
-            align-items:baseline;padding-bottom:clamp(10px,1.5vh,20px);
+  .pains{list-style:none;margin:0 auto;padding:0;max-width:92ch;
+         display:flex;flex-direction:column;gap:clamp(7px,1.1vh,15px)}
+  .pains li{display:grid;grid-template-columns:minmax(8em,auto) 1fr;gap:0 24px;
+            align-items:baseline;padding-bottom:clamp(7px,1.1vh,15px);
             border-bottom:1px solid #26242b}
   .pains li:last-child{border-bottom:0;padding-bottom:0}
   .pains .n{font-size:clamp(23px,2.6vw,34px);font-weight:700;color:#ff8d55;
             letter-spacing:-.02em;line-height:1.05;text-align:right;white-space:nowrap}
-  .pains .t{font-size:clamp(14px,1.25vw,17px);line-height:1.45;color:#ddd9d5}
+  .pains .t{font-size:clamp(13.5px,1.18vw,16px);line-height:1.42;color:#ddd9d5}
   .pains .t b{color:#fff;font-weight:600}
   /* The results band carries a prompt column, so it gets a wider column and tighter rows
      than the 1000px text measure, to stay inside one viewport. */
@@ -137,7 +137,10 @@
   .strip.wide td.q{font-size:12.5px;line-height:1.35;color:#a9a5a1;max-width:30em}
   .strip.wide td.w{font-size:12.5px;line-height:1.35}
   .strip.wide figure{margin:0}
-  .basis{margin:30px auto 0;max-width:86ch;font-size:12.5px;color:#7e7b78;text-align:center}
+  .pains .fix{display:block;margin-top:5px;font-family:var(--mono);font-size:11px;
+             letter-spacing:.02em;color:#8d8a86}
+  .pains .fix b{color:#ff8d55;font-weight:600}
+  .basis{margin:22px auto 0;max-width:92ch;font-size:12px;color:#7e7b78;text-align:center}
   @media (max-width:760px){ .pains li{grid-template-columns:1fr;gap:2px}
                             .pains .n{text-align:left} }
   .strip table{font-size:15px}
@@ -466,15 +469,15 @@
   <p class="so">Measuring the actual pain point</p>
   <ul class="pains">
     <li><span class="n">3,695 h</span><span class="t">of user waiting per quarter, <b>$12,697</b> billed, on six
-      patterns the browser could handle natively. 447,060 calls, 4,635 users, 31,398 sites.</span></li>
+      patterns the browser could handle natively. 447,060 calls, 4,635 users, 31,398 sites.<span class="fix">&#8627; addressed by <b>harvest_list</b>, <b>get_links</b>, <b>read_form</b>, and <b>wait_for</b> / empty-result marking / <b>pattern</b> on the existing tools &mdash; section 2.1</span></span></li>
     <li><span class="n">1,548 h</span><span class="t">scanning links by hand. <b>170,440 scripts</b> that select
-      anchors and read their hrefs, written one at a time by 3,176 users.</span></li>
+      anchors and read their hrefs, written one at a time by 3,176 users.<span class="fix">&#8627; addressed by <b>get_links(href_pattern=)</b> &mdash; one call, no script</span></span></li>
     <li><span class="n">615 h</span><span class="t">parked on hard-coded sleeps, <b>96 hours of it literally
-      asleep</b>, waiting on nothing in particular.</span></li>
+      asleep</b>, waiting on nothing in particular.<span class="fix">&#8627; addressed by <b>execute_javascript(wait_for=)</b> &mdash; returns when the node appears</span></span></li>
     <li><span class="n">316 h</span><span class="t">of scroll-read-dedupe loops, one model round trip per scroll.
-      The worst single loop ran <b>422 times</b> on one page.</span></li>
+      The worst single loop ran <b>422 times</b> on one page.<span class="fix">&#8627; addressed by <b>harvest_list(item_selector=, key=)</b> &mdash; the loop runs in-page and dedupes on key</span></span></li>
     <li><span class="n">313 h</span><span class="t">spent on calls that returned nothing. <b>59,039 came back
-      empty</b>, and none could say whether the page was empty or the selector broke.</span></li>
+      empty</b>, and none could say whether the page was empty or the selector broke.<span class="fix">&#8627; addressed by empty-result marking on <b>execute_javascript</b></span></span></li>
   </ul>
   <p class="basis">Jul 8 &ndash; Oct 8, 2026. Hours are measured elapsed time from each call to the next, capped at
   120s so an idle user is not counted. Dollars at the billed $0.0284 per tool call.</p>
@@ -737,15 +740,15 @@
   <p class="so">Measuring the actual pain point</p>
   <ul class="pains">
     <li><span class="n">964 h</span><span class="t">per quarter re-running a page reader the agent had
-      <b>already written</b> — 134,403 calls, a fifth of all JavaScript time on these sites.</span></li>
+      <b>already written</b> — 134,403 calls, a fifth of all JavaScript time on these sites.<span class="fix">&#8627; addressed by the <b>26 site toolkits</b> &mdash; 100 named readers shipped with the browser</span></span></li>
     <li><span class="n">105,144</span><span class="t">distinct page readers hand-written for just 26 sites.
-      <b>98.8% are used in one conversation</b> and thrown away.</span></li>
+      <b>98.8% are used in one conversation</b> and thrown away.<span class="fix">&#8627; addressed by <b>execute_javascript(toolkit=&quot;&lt;site&gt;&quot;)</b> &mdash; written once, versioned, reused</span></span></li>
     <li><span class="n">9,421&times;</span><span class="t">one reader for an Instagram profile, re-written and
-      re-run. The next three ran <b>3,197, 1,573 and 1,005 times</b>.</span></li>
+      re-run. The next three ran <b>3,197, 1,573 and 1,005 times</b>.<span class="fix">&#8627; addressed by <b>pxInstagram.profile</b>, <b>pxX.posts</b>, <b>pxLinkedin.job</b> and <b>pxGoogle.place</b></span></span></li>
     <li><span class="n">1,660 h</span><span class="t">hand-writing page readers on these 26 sites, <b>a third of
-      every JavaScript hour</b> spent there, across 3,571 users.</span></li>
+      every JavaScript hour</b> spent there, across 3,571 users.<span class="fix">&#8627; addressed by the 26 toolkits &mdash; <b>pxAmazon</b>, <b>pxFacebook</b>, <b>pxYoutube</b>, <b>pxZillow</b> and 22 more</span></span></li>
     <li><span class="n">54 h</span><span class="t">re-running a script that already returned nothing.
-      <b>6,381 of 8,555 retries</b> came back empty a second time.</span></li>
+      <b>6,381 of 8,555 retries</b> came back empty a second time.<span class="fix">&#8627; addressed by the three-anchor contract &mdash; every reader returns <b>ok</b>, <b>empty</b> or <b>drift</b>, never a bare <b>[]</b> &mdash; section 2.3</span></span></li>
   </ul>
   <p class="basis">Jul 8 &ndash; Oct 8, 2026, the 26 head sites from section 1.2: 646,197 JavaScript calls,
   4,984 hours, 31,983 runs. Same measurement basis as above.</p>
@@ -831,14 +834,14 @@ execute_javascript again with toolkit="instagram" &mdash; your edited copy is us
     <th>Calls</th><th>&Delta;</th><th>Secs</th><th>&Delta;</th><th>Cost</th><th>&Delta;</th>
   </tr></thead>
   <tbody>
-    <tr><td class="n">google#6<span class="tag">Google Maps</span></td><td class="q">Need construction and builder leads. 50 company names in charlottesville</td><td class="w">50 &rarr; <b>56</b> companies</td><td>16 &rarr; 5</td><td><b>&minus;69%</b></td><td>88 &rarr; 46</td><td><b>&minus;48%</b></td><td>$0.181 &rarr; $0.077</td><td><b>&minus;57%</b></td></tr>
+    <tr><td class="n">google#6<span class="tag">Google Maps</span></td><td class="q">Need construction and builder leads. 50 company names in charlottesville</td><td class="w">50 &rarr; 56 companies</td><td>16 &rarr; 5</td><td><b>&minus;69%</b></td><td>88 &rarr; 46</td><td><b>&minus;48%</b></td><td>$0.181 &rarr; $0.077</td><td><b>&minus;57%</b></td></tr>
     <tr><td class="n">google#107<span class="tag">Google Maps</span></td><td class="q">Using Google Maps, find 40 restaurants in Portland, Oregon that have a rating of 4.3 or higher and at least 100 reviews&hellip;</td><td class="w">40 &rarr; 40 restaurants</td><td>144 &rarr; 146</td><td><b><span class="up">+1%</span></b></td><td>464 &rarr; 236</td><td><b>&minus;49%</b></td><td>$0.302 &rarr; $0.202</td><td><b>&minus;33%</b></td></tr>
     <tr><td class="n">reddit#201<span class="tag">Reddit</span></td><td class="q">Go to reddit.com/r/SaaS/top/?t=month and collect the top 150 posts&hellip; title, author, score, comments, permalink</td><td class="w">150 &rarr; 150 posts</td><td>5 &rarr; 3</td><td><b>&minus;40%</b></td><td>27 &rarr; 20</td><td><b>&minus;26%</b></td><td>$0.091 &rarr; $0.037</td><td><b>&minus;59%</b></td></tr>
     <tr><td class="n">tiktok#105<span class="tag">TikTok</span></td><td class="q">Find me 50 creators on instagram and tiktok that post 75 hard lifestyle content and give me ideas - more than 10k followers</td><td class="w">50 &rarr; 51 creators</td><td>21 &rarr; 17</td><td><b>&minus;19%</b></td><td>227 &rarr; 122</td><td><b>&minus;46%</b></td><td>$0.226 &rarr; $0.220</td><td><b>&minus;3%</b></td></tr>
     <tr><td class="n">facebook#109<span class="tag">FB Marketplace</span></td><td class="q">Access my Facebook Marketplace and mine all the Honda City in Mumbai Region&hellip; URL, contact number, location, separate by transmission</td><td class="w">46 &rarr; 43 listings</td><td>672 &rarr; 367</td><td><b>&minus;45%</b></td><td>661 &rarr; 398</td><td><b>&minus;40%</b></td><td>$0.585 &rarr; $0.464</td><td><b>&minus;21%</b></td></tr>
     <tr><td class="n">facebook#108<span class="tag">FB Marketplace</span></td><td class="q">Comb Facebook Marketplace for a full suspension mountain bike, frame size XL, with 29" wheels and compile every real listing into a sheet</td><td class="w">37 &rarr; 26 listings</td><td>1488 &rarr; 492</td><td><b>&minus;67%</b></td><td>2071 &rarr; 601</td><td><b>&minus;71%</b></td><td>$1.983 &rarr; $0.866</td><td><b>&minus;56%</b></td></tr>
     <tr><td class="n">google#102<span class="tag">Google Maps</span></td><td class="q">Can you open google maps for city Zagreb find all restaurants, hotels with restaurants and vineries. Extract them in Excel&hellip;</td><td class="w">266 &rarr; 254 places</td><td>1763 &rarr; 1432</td><td><b>&minus;19%</b></td><td>1475 &rarr; 1216</td><td><b>&minus;18%</b></td><td>$1.590 &rarr; $0.984</td><td><b>&minus;38%</b></td></tr>
-    <tr><td class="n">youtube#104<span class="tag">YouTube</span></td><td class="q">go through this youtube channel and go though each and every video&hellip; give me the list of all the stocks they are recommended</td><td class="w">161 &rarr; <b>162</b> videos</td><td>1936 &rarr; 1206</td><td><b>&minus;38%</b></td><td>1868 &rarr; 987</td><td><b>&minus;47%</b></td><td>$1.998 &rarr; $1.748</td><td><b>&minus;13%</b></td></tr>
+    <tr><td class="n">youtube#104<span class="tag">YouTube</span></td><td class="q">go through this youtube channel and go though each and every video&hellip; give me the list of all the stocks they are recommended</td><td class="w">161 &rarr; 162 videos</td><td>1936 &rarr; 1206</td><td><b>&minus;38%</b></td><td>1868 &rarr; 987</td><td><b>&minus;47%</b></td><td>$1.998 &rarr; $1.748</td><td><b>&minus;13%</b></td></tr>
   </tbody>
 </table>
 </figure>
