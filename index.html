@@ -114,6 +114,32 @@
   .strip .cell td{color:#e9e7e4;border-bottom-color:#26242b}
   .strip .cell td:first-child{color:#a9a5a1}
   .strip .cell p{color:#a9a5a1}
+  /* Pain-point bullets. One statistic per line, sized to fit a laptop viewport without
+     scrolling, so the whole band reads as a single slide. */
+  .pains{list-style:none;margin:0 auto;padding:0;max-width:86ch;
+         display:flex;flex-direction:column;gap:clamp(10px,1.5vh,20px)}
+  .pains li{display:grid;grid-template-columns:minmax(8.5em,auto) 1fr;gap:0 26px;
+            align-items:baseline;padding-bottom:clamp(10px,1.5vh,20px);
+            border-bottom:1px solid #26242b}
+  .pains li:last-child{border-bottom:0;padding-bottom:0}
+  .pains .n{font-size:clamp(23px,2.6vw,34px);font-weight:700;color:#ff8d55;
+            letter-spacing:-.02em;line-height:1.05;text-align:right;white-space:nowrap}
+  .pains .t{font-size:clamp(14px,1.25vw,17px);line-height:1.45;color:#ddd9d5}
+  .pains .t b{color:#fff;font-weight:600}
+  /* The results band carries a prompt column, so it gets a wider column and tighter rows
+     than the 1000px text measure, to stay inside one viewport. */
+  .strip.wide .strip-in{max-width:1340px}
+  .strip.wide{padding:40px 0 34px}
+  .strip.wide .so{margin-bottom:24px}
+  .strip.wide table{font-size:13.5px}
+  .strip.wide td{padding-top:8px;padding-bottom:8px}
+  .strip.wide th{padding-bottom:9px}
+  .strip.wide td.q{font-size:12.5px;line-height:1.35;color:#a9a5a1;max-width:30em}
+  .strip.wide td.w{font-size:12.5px;line-height:1.35}
+  .strip.wide figure{margin:0}
+  .basis{margin:30px auto 0;max-width:86ch;font-size:12.5px;color:#7e7b78;text-align:center}
+  @media (max-width:760px){ .pains li{grid-template-columns:1fr;gap:2px}
+                            .pains .n{text-align:left} }
   .strip table{font-size:15px}
   .strip th{color:#8d8a86;border-bottom-color:#3a3840;font-size:11px;padding-bottom:13px}
   .strip td{color:#ddd9d5;border-bottom-color:#232128;padding-top:13px;padding-bottom:13px}
@@ -438,72 +464,20 @@
 <div class="strip">
 <div class="strip-in">
   <p class="so">Measuring the actual pain point</p>
-
-  <p class="punch">Over three months these six changes remove <b>20,252 to 32,336 model
-  turns</b>. That is <b>33 to 53 hours of user waiting</b>, and <b>$647 to $780</b>. They also
-  attack 33.7 hours of fixed sleep and 811 M characters of carried context.</p>
-  <p class="sub">They touch 362,199 distinct calls, 22% of all JavaScript, across 29,830 sites
-  and 4,380 users. That is 81% of everyone who ran one in these three months. The low end is the harvest loops alone, which are firm. The high end adds the empty re-runs, which are a ceiling. Together they are 2.0% of the turns that ran JavaScript.</p>
-
-  <div class="grid">
-    <div class="cell">
-      <h5>Time &mdash; 53.4 hours</h5>
-      <table><tbody>
-        <tr><td>Harvest loops, 20,252 round trips</td><td class="big">33.5 h</td></tr>
-        <tr><td>Empty re-runs, 12,084 round trips, a ceiling</td><td class="big">20.0 h</td></tr>
-        <tr><td>Not in the total: fixed sleep <code>wait_for</code> shortens</td><td>33.7 h</td></tr>
-        <tr><td>Not in the total: sleep inside the harvest scripts</td><td>14.1 h</td></tr>
-        <tr><td>Not in the total: <code>get_links</code> script generation</td><td>27.0 h</td></tr>
-      </tbody></table>
-      <p>The harvest share, 33.5 hours, is firm: one call replaces the loop. The re-run share,
-      20.0 hours, is a ceiling. Those retries returned nothing, but a marker may not stop each
-      one. Script generation counts as money but not as time. The token price is direct, while
-      the 4.0 ms per character behind the 27 hours is a weak regression.</p>
-    </div>
-
-    <div class="cell">
-      <h5>Turns &mdash; 32,336</h5>
-      <table><tbody>
-        <tr><td>Harvest loops collapsed into one call</td><td class="big">20,252</td></tr>
-        <tr><td>Re-runs after an empty that come back empty again</td><td class="big">12,387</td></tr>
-        <tr><td>Counted in both, removed once</td><td>&minus;303</td></tr>
-        <tr><td>Worst single loop</td><td>142 calls, one page</td></tr>
-      </tbody></table>
-      <p>A stricter test cut the harvest figure from 33,258 to 20,252. A repeat counts only if
-      the loop stayed on one page. And 27.8% of re-runs after an empty do succeed, so the agent
-      was polling, not stuck. I keep only the 12,387 that came back empty again.</p>
-    </div>
-
-    <div class="cell">
-      <h5>Money &mdash; $647 to $780</h5>
-      <table><tbody>
-        <tr><td>32,336 tool calls at the measured $0.0110</td><td class="big">$356</td></tr>
-        <tr><td>59.9 M characters of script, net of a 100-character tool call</td><td class="big">$176</td></tr>
-        <tr><td><code>harvest_list</code> returning counts, not the store</td><td class="big">$248</td></tr>
-        <tr><td>Not in the total: the context pool, which the $248 comes out of</td><td>$2,024</td></tr>
-      </tbody></table>
-      <p>The $0.0110 is the billed average for each call. I cannot split it, so the three rows
-      above can overlap. The last row is the opportunity, not a saving. These calls put 811 M
-      characters into context, and context is 89% of the JavaScript bill. Most of it is data the
-      model asked for. What a tool adds is a cap and a dedupe the author cannot forget, so the
-      pool grows more slowly. I have not measured how much of the 811 M is waste.</p>
-    </div>
-
-    <div class="cell">
-      <h5>Correctness</h5>
-      <table><tbody>
-        <tr><td><code>wait_for</code> &mdash; sleep then read, fails today</td><td class="big">11.6%</td></tr>
-        <tr><td><code>harvest_list</code> &mdash; scroll loops</td><td class="big">8.8%</td></tr>
-        <tr><td>Corpus baseline</td><td>6.2%</td></tr>
-        <tr><td>Ambiguous one-word results, from 866 users</td><td class="big">5,320</td></tr>
-      </tbody></table>
-      <p>The two signals that sleep longest also fail most often. Form reads and page grep are
-      below the baseline, and I claim no reliability win there. The model spots an empty easily. All 59,039 return
-      <code>[]</code>, <code>null</code>, <code>undefined</code>, <code>{}</code> or nothing at all. What it cannot tell is whether the
-      page was empty or the selector was wrong. The 5,320 returning <code>0</code> or
-      <code>false</code> are harder, because those are sometimes the right answer.</p>
-    </div>
-  </div>
+  <ul class="pains">
+    <li><span class="n">3,695 h</span><span class="t">of user waiting per quarter, <b>$12,697</b> billed, on six
+      patterns the browser could handle natively. 447,060 calls, 4,635 users, 31,398 sites.</span></li>
+    <li><span class="n">1,548 h</span><span class="t">scanning links by hand. <b>170,440 scripts</b> that select
+      anchors and read their hrefs, written one at a time by 3,176 users.</span></li>
+    <li><span class="n">615 h</span><span class="t">parked on hard-coded sleeps, <b>96 hours of it literally
+      asleep</b>, waiting on nothing in particular.</span></li>
+    <li><span class="n">316 h</span><span class="t">of scroll-read-dedupe loops, one model round trip per scroll.
+      The worst single loop ran <b>422 times</b> on one page.</span></li>
+    <li><span class="n">313 h</span><span class="t">spent on calls that returned nothing. <b>59,039 came back
+      empty</b>, and none could say whether the page was empty or the selector broke.</span></li>
+  </ul>
+  <p class="basis">Jul 8 &ndash; Oct 8, 2026. Hours are measured elapsed time from each call to the next, capped at
+  120s so an idle user is not counted. Dollars at the billed $0.0284 per tool call.</p>
 </div>
 </div>
 </section>
@@ -761,66 +735,20 @@
 <div class="strip">
 <div class="strip-in">
   <p class="so">Measuring the actual pain point</p>
-
-  <p class="punch">On the 26 sites that get a toolkit, agents hand-wrote <b>105,144 distinct page
-  readers</b> across <b>250,576 calls</b>. Essentially none is ever reused: <b>98.8%</b> are
-  written, run inside a single conversation, and thrown away.</p>
-  <p class="sub">Those 26 hosts carry 723,371 JavaScript calls, 43.9% of the corpus, from 3,571
-  users. A reader shipped with the browser is written once instead of 105,144 times.</p>
-
-  <div class="grid">
-    <div class="cell">
-      <h5>Nothing is reused</h5>
-      <table><tbody>
-        <tr><td>Distinct hand-written page readers</td><td class="big">105,144</td></tr>
-        <tr><td>Used in exactly one conversation</td><td class="big">98.8%</td></tr>
-        <tr><td>Written for exactly one user</td><td class="big">105,092</td></tr>
-        <tr><td>New scripts per run, these sites</td><td>7.6</td></tr>
-      </tbody></table>
-      <p>Two users extracting the same LinkedIn job card write two different readers, and so does
-      the same user tomorrow. The work is redone because nothing keeps it.</p>
-    </div>
-
-    <div class="cell">
-      <h5>And it is the same work</h5>
-      <table><tbody>
-        <tr><td>Readers run five or more times</td><td class="big">5,151</td></tr>
-        <tr><td>Share of reader calls they cover</td><td class="big">54.8%</td></tr>
-        <tr><td>Most-repeated single reader</td><td class="big">9,421 runs</td></tr>
-        <tr><td>Next three</td><td>3,197 &middot; 1,573 &middot; 1,005</td></tr>
-      </tbody></table>
-      <p>The top one reads an Instagram profile's follower count and bio. It ran 9,421 times. The
-      next three read an X timeline, LinkedIn job cards, and the Google Maps results feed &mdash;
-      four of the 26 toolkits.</p>
-    </div>
-
-    <div class="cell">
-      <h5>What it does instead &mdash; the 8 prompts in section 3</h5>
-      <table><tbody>
-        <tr><td>JavaScript characters typed by the model</td><td class="big">131,823</td></tr>
-        <tr><td>Clicks and scrolls to walk the lists</td><td class="big">1,860</td></tr>
-        <tr><td>Files written to carry results out</td><td class="big">399</td></tr>
-        <tr><td>Subagents spawned</td><td class="big">113</td></tr>
-      </tbody></table>
-      <p>Same eight prompts, same sites, <code>main</code> against the branch. The branch typed
-      38,281 characters of JavaScript (&minus;71%), clicked 444 times (&minus;76%), wrote 34 files
-      (&minus;91%) and spawned 60 subagents (&minus;47%).</p>
-    </div>
-
-    <div class="cell">
-      <h5>Failure is silent today</h5>
-      <table><tbody>
-        <tr><td>Empty result, same script re-run</td><td class="big">8,555</td></tr>
-        <tr><td>Of those, empty again</td><td class="big">6,381</td></tr>
-        <tr><td><code>main</code>'s own syntax errors, 8 prompts</td><td class="big">9 of 17</td></tr>
-        <tr><td>Branch drift reports naming the function</td><td class="big">82</td></tr>
-      </tbody></table>
-      <p>An empty array does not say whether the page was empty or the selector broke, so the
-      agent re-runs the same reader and gets nothing twice. Of <code>main</code>'s 17 JavaScript
-      failures, 9 are the model mistyping its own code. The branch's 82 are drift reports that
-      name the function that broke &mdash; section 2.3.</p>
-    </div>
-  </div>
+  <ul class="pains">
+    <li><span class="n">964 h</span><span class="t">per quarter re-running a page reader the agent had
+      <b>already written</b> — 134,403 calls, a fifth of all JavaScript time on these sites.</span></li>
+    <li><span class="n">105,144</span><span class="t">distinct page readers hand-written for just 26 sites.
+      <b>98.8% are used in one conversation</b> and thrown away.</span></li>
+    <li><span class="n">9,421&times;</span><span class="t">one reader for an Instagram profile, re-written and
+      re-run. The next three ran <b>3,197, 1,573 and 1,005 times</b>.</span></li>
+    <li><span class="n">1,660 h</span><span class="t">hand-writing page readers on these 26 sites, <b>a third of
+      every JavaScript hour</b> spent there, across 3,571 users.</span></li>
+    <li><span class="n">54 h</span><span class="t">re-running a script that already returned nothing.
+      <b>6,381 of 8,555 retries</b> came back empty a second time.</span></li>
+  </ul>
+  <p class="basis">Jul 8 &ndash; Oct 8, 2026, the 26 head sites from section 1.2: 646,197 JavaScript calls,
+  4,984 hours, 31,983 runs. Same measurement basis as above.</p>
 </div>
 </div>
 
@@ -893,7 +821,7 @@ execute_javascript again with toolkit="instagram" &mdash; your edited copy is us
   answer, so an arm cannot look cheap by quitting early without it showing in that column.</p>
 </section>
 
-<div class="strip">
+<div class="strip wide">
 <div class="strip-in">
   <p class="so">So what</p>
 <figure>
