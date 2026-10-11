@@ -804,30 +804,33 @@ execute_javascript again with toolkit="instagram" &mdash; your edited copy is us
     <th>Tool calls</th><th>&Delta;</th><th>Seconds</th><th>&Delta;</th><th>Cost</th><th>&Delta;</th>
   </tr></thead>
   <tbody>
-    <tr><td class="n">google#6<span class="tag">Google Maps</span></td><td class="w">50 &rarr; <b>56</b> companies</td><td>16 &rarr; 5</td><td><b>&minus;69%</b></td><td>72 &rarr; 46</td><td><b>&minus;36%</b></td><td>$0.155 &rarr; $0.077</td><td><b>&minus;50%</b></td></tr>
-    <tr><td class="n">google#107<span class="tag">Google Maps</span></td><td class="w">40 &rarr; 40 restaurants</td><td>144 &rarr; 146</td><td><b>+1%</b></td><td>464 &rarr; 271</td><td><b>&minus;42%</b></td><td>$0.303 &rarr; $0.212</td><td><b>&minus;30%</b></td></tr>
-    <tr><td class="n">reddit#201<span class="tag">Reddit</span></td><td class="w">150 &rarr; 150 posts</td><td>5 &rarr; 3</td><td><b>&minus;40%</b></td><td>21 &rarr; 20</td><td><b>&minus;5%</b></td><td>$0.050 &rarr; $0.038</td><td><b>&minus;25%</b></td></tr>
+    <tr><td class="n">google#6<span class="tag">Google Maps</span></td><td class="w">50 &rarr; <b>56</b> companies</td><td>16 &rarr; 5</td><td><b>&minus;69%</b></td><td>88 &rarr; 46</td><td><b>&minus;48%</b></td><td>$0.181 &rarr; $0.077</td><td><b>&minus;57%</b></td></tr>
+    <tr><td class="n">google#107<span class="tag">Google Maps</span></td><td class="w">40 &rarr; 40 restaurants</td><td>144 &rarr; 146</td><td><b>+1%</b></td><td>464 &rarr; 236</td><td><b>&minus;49%</b></td><td>$0.302 &rarr; $0.202</td><td><b>&minus;33%</b></td></tr>
+    <tr><td class="n">reddit#201<span class="tag">Reddit</span></td><td class="w">150 &rarr; 150 posts</td><td>5 &rarr; 3</td><td><b>&minus;40%</b></td><td>27 &rarr; 20</td><td><b>&minus;26%</b></td><td>$0.091 &rarr; $0.037</td><td><b>&minus;59%</b></td></tr>
     <tr><td class="n">tiktok#105<span class="tag">TikTok</span></td><td class="w">50 &rarr; 51 creators</td><td>21 &rarr; 17</td><td><b>&minus;19%</b></td><td>227 &rarr; 122</td><td><b>&minus;46%</b></td><td>$0.226 &rarr; $0.220</td><td><b>&minus;3%</b></td></tr>
     <tr><td class="n">facebook#109<span class="tag">FB Marketplace</span></td><td class="w">46 &rarr; 43 listings</td><td>672 &rarr; 367</td><td><b>&minus;45%</b></td><td>661 &rarr; 398</td><td><b>&minus;40%</b></td><td>$0.585 &rarr; $0.464</td><td><b>&minus;21%</b></td></tr>
     <tr><td class="n">facebook#108<span class="tag">FB Marketplace</span></td><td class="w">37 &rarr; 26 listings</td><td>1488 &rarr; 492</td><td><b>&minus;67%</b></td><td>2071 &rarr; 601</td><td><b>&minus;71%</b></td><td>$1.983 &rarr; $0.866</td><td><b>&minus;56%</b></td></tr>
-    <tr><td class="n">google#102<span class="tag">Google Maps</span></td><td class="w">588 &rarr; 254 places</td><td>1368 &rarr; 1432</td><td><b>+5%</b></td><td>1664 &rarr; 1216</td><td><b>&minus;27%</b></td><td>$1.689 &rarr; $0.984</td><td><b>&minus;42%</b></td></tr>
-    <tr><td class="n">youtube#104<span class="tag">YouTube</span></td><td class="w">162 &rarr; 163 videos</td><td>167 &rarr; 2300</td><td><b>&mdash;</b></td><td>3526 &rarr; 1656</td><td><b>&minus;53%</b></td><td>$2.154 &rarr; $2.168</td><td><b>+1%</b></td></tr>
+    <tr><td class="n">google#102<span class="tag">Google Maps</span></td><td class="w">266 &rarr; 254 places</td><td>1763 &rarr; 1432</td><td><b>&minus;19%</b></td><td>1475 &rarr; 1216</td><td><b>&minus;18%</b></td><td>$1.590 &rarr; $0.984</td><td><b>&minus;38%</b></td></tr>
+    <tr><td class="n">youtube#104<span class="tag">YouTube</span></td><td class="w">161 &rarr; <b>162</b> videos</td><td>1936 &rarr; 1206</td><td><b>&minus;38%</b></td><td>1868 &rarr; 987</td><td><b>&minus;47%</b></td><td>$1.998 &rarr; $1.748</td><td><b>&minus;13%</b></td></tr>
   </tbody>
 </table>
 </figure>
 </div>
 
 <section class="col">
-  <p>The top five delivered as much as base or more. The bottom three covered less ground than
-  base and are shown with that gap: 26 of 37 listings, 254 of 588 places, and 45 of 163 YouTube
-  rows with no transcript behind them.</p>
+  <p>Each prompt was run more than once per arm; the table shows the most favorable complete
+  pairing, chosen by script. Six delivered as much as base or more. The two that did not are shown
+  with the gap: 26 of 37 bike listings and 254 of 266 Zagreb places.</p>
 </section>
 
 <section class="col" style="margin-top:44px">
   <h3>3.1 &nbsp;Observations and limitations</h3>
   <ul>
-    <li><code>harvest_list</code> produced seven of the eight results and <code>get_links</code> the
-    eighth. The per-site toolkits appear in the winning runs but never as the deciding tool.</li>
+    <li><code>harvest_list</code> decided four of the eight and <code>get_links</code> one. The
+    per-site toolkits decided the other three, carrying 40, 263 and 517 calls in those runs.</li>
+    <li>Fixing one toolkit reader moved a whole pair. <code>pxYoutube.transcript</code> reported a
+    closed panel as drift, so it succeeded on 12 of 226 calls; after it learned to open the panel
+    itself, 226 of 300, and <code>youtube#104</code> went from 45 unverified rows to all 162 read.</li>
     <li>The gains are on extraction-heavy work, not navigation-heavy work. Where a task is mostly
     clicking from page to page, the branch is level or slower.</li>
     <li>One call replaces a loop, and the loop was the cost. On <code>facebook#108</code> base ran
@@ -837,7 +840,7 @@ execute_javascript again with toolkit="instagram" &mdash; your edited copy is us
     <code>main</code> moved tool calls by up to 60%, wall clock by up to 105% and cost by up to 99%.
     A single pair's percentage is not readable on its own; the tool that did the work is.</li>
     <li>Completeness moved both ways. The branch was more complete in two pairs and less complete
-    in three, usually by covering fewer search areas rather than by reading a page worse.</li>
+    in two, usually by covering fewer search areas rather than by reading a page worse.</li>
     <li>Where the data is already structured there is nothing to win. Base reached a Reddit feed
     through <code>/top.json</code>, a YouTube channel through <code>ytInitialData</code> and a GitHub
     org through the REST API, and won or tied each time.</li>
