@@ -97,6 +97,34 @@
   .cell p{margin:10px 0 0;font-size:13.5px;color:var(--ink-2);line-height:1.5}
   .cell .big{font-size:15px;font-weight:700}
   @media (max-width:860px){ .grid{grid-template-columns:1fr;gap:0} }
+  /* Full-bleed dark band. Breaks out of `main` to the viewport edge, then re-aligns its
+     own contents to the same 1000px column the tables use. */
+  .strip{background:#141317;color:#e9e7e4;margin-inline:calc(50% - 50vw);width:100vw;
+         padding:56px 0 50px;margin-block:40px}
+  .strip-in{max-width:var(--page);margin-inline:auto;padding-inline:var(--gut)}
+  .strip .so{font-family:var(--mono);font-size:clamp(20px,2.3vw,31px);line-height:1.25;
+             letter-spacing:.17em;text-transform:uppercase;font-weight:500;color:#ff8d55;
+             text-align:center;margin:0 0 38px;text-wrap:balance}
+  .strip .punch{margin:0 auto;max-width:72ch;font-size:21px;line-height:1.45;color:#fbfaf9;
+                font-weight:500;letter-spacing:-.008em;text-align:center}
+  .strip .punch b{font-weight:700;color:#ffb184}
+  .strip .sub{margin:16px auto 0;max-width:74ch;font-size:15px;color:#a9a5a1;text-align:center}
+  .strip .grid{border-top:1px solid #2b2930;margin-top:34px}
+  .strip .cell h5{color:#ff8d55}
+  .strip .cell td{color:#e9e7e4;border-bottom-color:#26242b}
+  .strip .cell td:first-child{color:#a9a5a1}
+  .strip .cell p{color:#a9a5a1}
+  .strip table{font-size:15px}
+  .strip th{color:#8d8a86;border-bottom-color:#3a3840;font-size:11px;padding-bottom:13px}
+  .strip td{color:#ddd9d5;border-bottom-color:#232128;padding-top:13px;padding-bottom:13px}
+  .strip td.n{color:#fff;font-weight:700;font-size:14px}
+  .strip td.n .tag{color:#8d8a86}
+  .strip td.q{text-align:left;white-space:normal;color:#a9a5a1;font-size:12.5px;line-height:1.45;
+              max-width:30ch;padding-right:10px}
+  .strip td b{color:#6ee7a8;font-weight:700;font-size:14.5px}
+  .strip td .up{color:#f0a6a6;font-weight:600}
+  .strip figure{margin:0}
+  @media (max-width:1096px){ .strip figure{overflow-x:auto} }
   .out{font-family:var(--mono);font-size:12px;line-height:1.55;background:#faf8f6;
        border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin:0 0 16px;
        overflow-x:auto;white-space:pre;color:var(--ink-2)}
@@ -407,9 +435,9 @@
   <p><strong>Fails today</strong> is the share of those calls that do not return <code>ok</code>. The corpus baseline is 6.2%. The empty-result row is the exception. Those all fail by definition, so the rate says nothing.</p>
 </section>
 
-<div>
-<div class="sowhat">
-  <p class="k">So what</p>
+<div class="strip">
+<div class="strip-in">
+  <p class="so">Measuring the actual pain point</p>
 
   <p class="punch">Over three months these six changes remove <b>20,252 to 32,336 model
   turns</b>. That is <b>33 to 53 hours of user waiting</b>, and <b>$647 to $780</b>. They also
@@ -477,6 +505,7 @@
     </div>
   </div>
 </div>
+</div>
 </section>
 
 
@@ -491,6 +520,7 @@
   each one derived from the production scripts for that page. The agent calls them with
   <code>execute_javascript(toolkit="&lt;site&gt;")</code> instead of writing DOM code.</p>
 </section>
+
 
 <div class="col">
   <div class="tk">
@@ -727,6 +757,73 @@
   </div>
 </div>
 
+
+<div class="strip">
+<div class="strip-in">
+  <p class="so">Measuring the actual pain point</p>
+
+  <p class="punch">On the 26 sites that get a toolkit, agents hand-wrote <b>105,144 distinct page
+  readers</b> across <b>250,576 calls</b>. Essentially none is ever reused: <b>98.8%</b> are
+  written, run inside a single conversation, and thrown away.</p>
+  <p class="sub">Those 26 hosts carry 723,371 JavaScript calls, 43.9% of the corpus, from 3,571
+  users. A reader shipped with the browser is written once instead of 105,144 times.</p>
+
+  <div class="grid">
+    <div class="cell">
+      <h5>Nothing is reused</h5>
+      <table><tbody>
+        <tr><td>Distinct hand-written page readers</td><td class="big">105,144</td></tr>
+        <tr><td>Used in exactly one conversation</td><td class="big">98.8%</td></tr>
+        <tr><td>Written for exactly one user</td><td class="big">105,092</td></tr>
+        <tr><td>New scripts per run, these sites</td><td>7.6</td></tr>
+      </tbody></table>
+      <p>Two users extracting the same LinkedIn job card write two different readers, and so does
+      the same user tomorrow. The work is redone because nothing keeps it.</p>
+    </div>
+
+    <div class="cell">
+      <h5>And it is the same work</h5>
+      <table><tbody>
+        <tr><td>Readers run five or more times</td><td class="big">5,151</td></tr>
+        <tr><td>Share of reader calls they cover</td><td class="big">54.8%</td></tr>
+        <tr><td>Most-repeated single reader</td><td class="big">9,421 runs</td></tr>
+        <tr><td>Next three</td><td>3,197 &middot; 1,573 &middot; 1,005</td></tr>
+      </tbody></table>
+      <p>The top one reads an Instagram profile's follower count and bio. It ran 9,421 times. The
+      next three read an X timeline, LinkedIn job cards, and the Google Maps results feed &mdash;
+      four of the 26 toolkits.</p>
+    </div>
+
+    <div class="cell">
+      <h5>What it does instead &mdash; the 8 prompts in section 3</h5>
+      <table><tbody>
+        <tr><td>JavaScript characters typed by the model</td><td class="big">131,823</td></tr>
+        <tr><td>Clicks and scrolls to walk the lists</td><td class="big">1,860</td></tr>
+        <tr><td>Files written to carry results out</td><td class="big">399</td></tr>
+        <tr><td>Subagents spawned</td><td class="big">113</td></tr>
+      </tbody></table>
+      <p>Same eight prompts, same sites, <code>main</code> against the branch. The branch typed
+      38,281 characters of JavaScript (&minus;71%), clicked 444 times (&minus;76%), wrote 34 files
+      (&minus;91%) and spawned 60 subagents (&minus;47%).</p>
+    </div>
+
+    <div class="cell">
+      <h5>Failure is silent today</h5>
+      <table><tbody>
+        <tr><td>Empty result, same script re-run</td><td class="big">8,555</td></tr>
+        <tr><td>Of those, empty again</td><td class="big">6,381</td></tr>
+        <tr><td><code>main</code>'s own syntax errors, 8 prompts</td><td class="big">9 of 17</td></tr>
+        <tr><td>Branch drift reports naming the function</td><td class="big">82</td></tr>
+      </tbody></table>
+      <p>An empty array does not say whether the page was empty or the selector broke, so the
+      agent re-runs the same reader and gets nothing twice. Of <code>main</code>'s 17 JavaScript
+      failures, 9 are the model mistyping its own code. The branch's 82 are drift reports that
+      name the function that broke &mdash; section 2.3.</p>
+    </div>
+  </div>
+</div>
+</div>
+
 <hr class="rule">
 
 <section class="col">
@@ -796,25 +893,28 @@ execute_javascript again with toolkit="instagram" &mdash; your edited copy is us
   answer, so an arm cannot look cheap by quitting early without it showing in that column.</p>
 </section>
 
-<div class="full">
+<div class="strip">
+<div class="strip-in">
+  <p class="so">So what</p>
 <figure>
 <table>
   <thead><tr>
-    <th>Pair</th><th class="l">Delivered, base &rarr; branch</th>
-    <th>Tool calls</th><th>&Delta;</th><th>Seconds</th><th>&Delta;</th><th>Cost</th><th>&Delta;</th>
+    <th>Pair</th><th class="l">Prompt, as the user wrote it</th><th class="l">Delivered, base &rarr; branch</th>
+    <th>Calls</th><th>&Delta;</th><th>Secs</th><th>&Delta;</th><th>Cost</th><th>&Delta;</th>
   </tr></thead>
   <tbody>
-    <tr><td class="n">google#6<span class="tag">Google Maps</span></td><td class="w">50 &rarr; <b>56</b> companies</td><td>16 &rarr; 5</td><td><b>&minus;69%</b></td><td>88 &rarr; 46</td><td><b>&minus;48%</b></td><td>$0.181 &rarr; $0.077</td><td><b>&minus;57%</b></td></tr>
-    <tr><td class="n">google#107<span class="tag">Google Maps</span></td><td class="w">40 &rarr; 40 restaurants</td><td>144 &rarr; 146</td><td><b>+1%</b></td><td>464 &rarr; 236</td><td><b>&minus;49%</b></td><td>$0.302 &rarr; $0.202</td><td><b>&minus;33%</b></td></tr>
-    <tr><td class="n">reddit#201<span class="tag">Reddit</span></td><td class="w">150 &rarr; 150 posts</td><td>5 &rarr; 3</td><td><b>&minus;40%</b></td><td>27 &rarr; 20</td><td><b>&minus;26%</b></td><td>$0.091 &rarr; $0.037</td><td><b>&minus;59%</b></td></tr>
-    <tr><td class="n">tiktok#105<span class="tag">TikTok</span></td><td class="w">50 &rarr; 51 creators</td><td>21 &rarr; 17</td><td><b>&minus;19%</b></td><td>227 &rarr; 122</td><td><b>&minus;46%</b></td><td>$0.226 &rarr; $0.220</td><td><b>&minus;3%</b></td></tr>
-    <tr><td class="n">facebook#109<span class="tag">FB Marketplace</span></td><td class="w">46 &rarr; 43 listings</td><td>672 &rarr; 367</td><td><b>&minus;45%</b></td><td>661 &rarr; 398</td><td><b>&minus;40%</b></td><td>$0.585 &rarr; $0.464</td><td><b>&minus;21%</b></td></tr>
-    <tr><td class="n">facebook#108<span class="tag">FB Marketplace</span></td><td class="w">37 &rarr; 26 listings</td><td>1488 &rarr; 492</td><td><b>&minus;67%</b></td><td>2071 &rarr; 601</td><td><b>&minus;71%</b></td><td>$1.983 &rarr; $0.866</td><td><b>&minus;56%</b></td></tr>
-    <tr><td class="n">google#102<span class="tag">Google Maps</span></td><td class="w">266 &rarr; 254 places</td><td>1763 &rarr; 1432</td><td><b>&minus;19%</b></td><td>1475 &rarr; 1216</td><td><b>&minus;18%</b></td><td>$1.590 &rarr; $0.984</td><td><b>&minus;38%</b></td></tr>
-    <tr><td class="n">youtube#104<span class="tag">YouTube</span></td><td class="w">161 &rarr; <b>162</b> videos</td><td>1936 &rarr; 1206</td><td><b>&minus;38%</b></td><td>1868 &rarr; 987</td><td><b>&minus;47%</b></td><td>$1.998 &rarr; $1.748</td><td><b>&minus;13%</b></td></tr>
+    <tr><td class="n">google#6<span class="tag">Google Maps</span></td><td class="q">Need construction and builder leads. 50 company names in charlottesville</td><td class="w">50 &rarr; <b>56</b> companies</td><td>16 &rarr; 5</td><td><b>&minus;69%</b></td><td>88 &rarr; 46</td><td><b>&minus;48%</b></td><td>$0.181 &rarr; $0.077</td><td><b>&minus;57%</b></td></tr>
+    <tr><td class="n">google#107<span class="tag">Google Maps</span></td><td class="q">Using Google Maps, find 40 restaurants in Portland, Oregon that have a rating of 4.3 or higher and at least 100 reviews&hellip;</td><td class="w">40 &rarr; 40 restaurants</td><td>144 &rarr; 146</td><td><b><span class="up">+1%</span></b></td><td>464 &rarr; 236</td><td><b>&minus;49%</b></td><td>$0.302 &rarr; $0.202</td><td><b>&minus;33%</b></td></tr>
+    <tr><td class="n">reddit#201<span class="tag">Reddit</span></td><td class="q">Go to reddit.com/r/SaaS/top/?t=month and collect the top 150 posts&hellip; title, author, score, comments, permalink</td><td class="w">150 &rarr; 150 posts</td><td>5 &rarr; 3</td><td><b>&minus;40%</b></td><td>27 &rarr; 20</td><td><b>&minus;26%</b></td><td>$0.091 &rarr; $0.037</td><td><b>&minus;59%</b></td></tr>
+    <tr><td class="n">tiktok#105<span class="tag">TikTok</span></td><td class="q">Find me 50 creators on instagram and tiktok that post 75 hard lifestyle content and give me ideas - more than 10k followers</td><td class="w">50 &rarr; 51 creators</td><td>21 &rarr; 17</td><td><b>&minus;19%</b></td><td>227 &rarr; 122</td><td><b>&minus;46%</b></td><td>$0.226 &rarr; $0.220</td><td><b>&minus;3%</b></td></tr>
+    <tr><td class="n">facebook#109<span class="tag">FB Marketplace</span></td><td class="q">Access my Facebook Marketplace and mine all the Honda City in Mumbai Region&hellip; URL, contact number, location, separate by transmission</td><td class="w">46 &rarr; 43 listings</td><td>672 &rarr; 367</td><td><b>&minus;45%</b></td><td>661 &rarr; 398</td><td><b>&minus;40%</b></td><td>$0.585 &rarr; $0.464</td><td><b>&minus;21%</b></td></tr>
+    <tr><td class="n">facebook#108<span class="tag">FB Marketplace</span></td><td class="q">Comb Facebook Marketplace for a full suspension mountain bike, frame size XL, with 29" wheels and compile every real listing into a sheet</td><td class="w">37 &rarr; 26 listings</td><td>1488 &rarr; 492</td><td><b>&minus;67%</b></td><td>2071 &rarr; 601</td><td><b>&minus;71%</b></td><td>$1.983 &rarr; $0.866</td><td><b>&minus;56%</b></td></tr>
+    <tr><td class="n">google#102<span class="tag">Google Maps</span></td><td class="q">Can you open google maps for city Zagreb find all restaurants, hotels with restaurants and vineries. Extract them in Excel&hellip;</td><td class="w">266 &rarr; 254 places</td><td>1763 &rarr; 1432</td><td><b>&minus;19%</b></td><td>1475 &rarr; 1216</td><td><b>&minus;18%</b></td><td>$1.590 &rarr; $0.984</td><td><b>&minus;38%</b></td></tr>
+    <tr><td class="n">youtube#104<span class="tag">YouTube</span></td><td class="q">go through this youtube channel and go though each and every video&hellip; give me the list of all the stocks they are recommended</td><td class="w">161 &rarr; <b>162</b> videos</td><td>1936 &rarr; 1206</td><td><b>&minus;38%</b></td><td>1868 &rarr; 987</td><td><b>&minus;47%</b></td><td>$1.998 &rarr; $1.748</td><td><b>&minus;13%</b></td></tr>
   </tbody>
 </table>
 </figure>
+</div>
 </div>
 
 <section class="col">
