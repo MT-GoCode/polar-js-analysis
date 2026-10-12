@@ -116,7 +116,7 @@
   .strip .cell p{color:#a9a5a1}
   /* Pain-point bullets. One statistic per line, sized to fit a laptop viewport without
      scrolling, so the whole band reads as a single slide. */
-  .pains{list-style:none;margin:0 auto;padding:0;max-width:92ch;
+  .pains{list-style:none;margin:0 auto;padding:0;max-width:100ch;
          display:flex;flex-direction:column;gap:clamp(7px,1.1vh,15px)}
   .pains li{display:grid;grid-template-columns:minmax(8em,auto) 1fr;gap:0 24px;
             align-items:baseline;padding-bottom:clamp(7px,1.1vh,15px);
@@ -124,7 +124,7 @@
   .pains li:last-child{border-bottom:0;padding-bottom:0}
   .pains .n{font-size:clamp(23px,2.6vw,34px);font-weight:700;color:#ff8d55;
             letter-spacing:-.02em;line-height:1.05;text-align:right;white-space:nowrap}
-  .pains .t{font-size:clamp(13.5px,1.18vw,16px);line-height:1.42;color:#ddd9d5}
+  .pains .t{font-size:clamp(13px,1.12vw,15.5px);line-height:1.4;color:#ddd9d5}
   .pains .t b{color:#fff;font-weight:600}
   /* The results band carries a prompt column, so it gets a wider column and tighter rows
      than the 1000px text measure, to stay inside one viewport. */
@@ -137,10 +137,12 @@
   .strip.wide td.q{font-size:12.5px;line-height:1.35;color:#a9a5a1;max-width:30em}
   .strip.wide td.w{font-size:12.5px;line-height:1.35}
   .strip.wide figure{margin:0}
+  .pains .t code{background:#241f24;color:#ffc9a6;border:1px solid #352d33;font-size:.86em;
+                 padding:.08em .32em}
   .pains .fix{display:block;margin-top:5px;font-family:var(--mono);font-size:11px;
              letter-spacing:.02em;color:#8d8a86}
   .pains .fix b{color:#ff8d55;font-weight:600}
-  .basis{margin:22px auto 0;max-width:92ch;font-size:12px;color:#7e7b78;text-align:center}
+  .basis{margin:20px auto 0;max-width:100ch;font-size:12px;color:#7e7b78;text-align:center}
   @media (max-width:760px){ .pains li{grid-template-columns:1fr;gap:2px}
                             .pains .n{text-align:left} }
   .strip table{font-size:15px}
@@ -468,19 +470,40 @@
 <div class="strip-in">
   <p class="so">Measuring the actual pain point</p>
   <ul class="pains">
-    <li><span class="n">3,695 h</span><span class="t">of user waiting per quarter, <b>$12,697</b> billed, on six
-      patterns the browser could handle natively. 447,060 calls, 4,635 users, 31,398 sites.<span class="fix">&#8627; addressed by <b>harvest_list</b>, <b>get_links</b>, <b>read_form</b>, and <b>wait_for</b> / empty-result marking / <b>pattern</b> on the existing tools &mdash; section 2.1</span></span></li>
-    <li><span class="n">1,548 h</span><span class="t">scanning links by hand. <b>170,440 scripts</b> that select
-      anchors and read their hrefs, written one at a time by 3,176 users.<span class="fix">&#8627; addressed by <b>get_links(href_pattern=)</b> &mdash; one call, no script</span></span></li>
-    <li><span class="n">615 h</span><span class="t">parked on hard-coded sleeps, <b>96 hours of it literally
-      asleep</b>, waiting on nothing in particular.<span class="fix">&#8627; addressed by <b>execute_javascript(wait_for=)</b> &mdash; returns when the node appears</span></span></li>
-    <li><span class="n">316 h</span><span class="t">of scroll-read-dedupe loops, one model round trip per scroll.
-      The worst single loop ran <b>422 times</b> on one page.<span class="fix">&#8627; addressed by <b>harvest_list(item_selector=, key=)</b> &mdash; the loop runs in-page and dedupes on key</span></span></li>
-    <li><span class="n">313 h</span><span class="t">spent on calls that returned nothing. <b>59,039 came back
-      empty</b>, and none could say whether the page was empty or the selector broke.<span class="fix">&#8627; addressed by empty-result marking on <b>execute_javascript</b></span></span></li>
+    <li><span class="n">3,695 h</span><span class="t">of user waiting per quarter, and <b>$12,697</b>
+      billed, on six jobs the agent writes JavaScript for because the browser gives it no command
+      to call. 447,060 calls, 4,635 users, 31,398 sites.<span class="fix">&#8627; addressed by
+      <b>harvest_list</b>, <b>get_links</b>, <b>read_form</b>, and <b>wait_for</b> /
+      empty-result marking / <b>pattern</b> on the existing tools &mdash; section 2.1</span></span></li>
+
+    <li><span class="n">1,548 h</span><span class="t">It wants the links on the page. There is no
+      command for that, so it types out <code>[...document.querySelectorAll('a')].map(a =&gt; a.href)</code>
+      and a filter, and ships it to the browser. <b>It wrote that program 170,440 times.</b><span
+      class="fix">&#8627; addressed by <b>get_links(href_pattern=)</b> &mdash; one call, no
+      script</span></span></li>
+
+    <li><span class="n">615 h</span><span class="t">The element it needs is not in the DOM yet, and
+      nothing tells it when it will be. So it guesses:
+      <code>await new Promise(r =&gt; setTimeout(r, 3000))</code>. <b>96 of those hours were spent
+      inside setTimeout</b> on pages that were already ready.<span class="fix">&#8627; addressed by
+      <b>execute_javascript(wait_for=)</b> &mdash; returns the moment the node
+      appears</span></span></li>
+
+    <li><span class="n">316 h</span><span class="t">Marketplace only loads more listings as you
+      scroll. So the agent runs <code>window.scrollTo(0, document.body.scrollHeight)</code>, reads
+      what appeared, scrolls again &mdash; and <b>every single scroll is a separate round trip to
+      the model</b>. One page took 422 of them.<span class="fix">&#8627; addressed by
+      <b>harvest_list(item_selector=, key=)</b> &mdash; the whole loop runs in-page and dedupes on
+      key</span></span></li>
+
+    <li><span class="n">313 h</span><span class="t"><code>document.querySelectorAll('.listing')</code>
+      matched nothing, so the call returned <code>[]</code>. The agent cannot tell whether the page
+      really had no listings or whether <code>.listing</code> is just the wrong class name.
+      <b>59,039 calls came back like this.</b><span class="fix">&#8627; addressed by empty-result
+      marking on <b>execute_javascript</b></span></span></li>
   </ul>
-  <p class="basis">Jul 8 &ndash; Oct 8, 2026. Hours are measured elapsed time from each call to the next, capped at
-  120s so an idle user is not counted. Dollars at the billed $0.0284 per tool call.</p>
+  <p class="basis">Jul 8 &ndash; Oct 8, 2026. Hours are measured elapsed time from each call to the next,
+  capped at 120s so an idle user is not counted. Dollars at the billed $0.0284 per tool call.</p>
 </div>
 </div>
 </section>
@@ -739,16 +762,35 @@
 <div class="strip-in">
   <p class="so">Measuring the actual pain point</p>
   <ul class="pains">
-    <li><span class="n">964 h</span><span class="t">per quarter re-running a page reader the agent had
-      <b>already written</b> — 134,403 calls, a fifth of all JavaScript time on these sites.<span class="fix">&#8627; addressed by the <b>26 site toolkits</b> &mdash; 100 named readers shipped with the browser</span></span></li>
-    <li><span class="n">105,144</span><span class="t">distinct page readers hand-written for just 26 sites.
-      <b>98.8% are used in one conversation</b> and thrown away.<span class="fix">&#8627; addressed by <b>execute_javascript(toolkit=&quot;&lt;site&gt;&quot;)</b> &mdash; written once, versioned, reused</span></span></li>
-    <li><span class="n">9,421&times;</span><span class="t">one reader for an Instagram profile, re-written and
-      re-run. The next three ran <b>3,197, 1,573 and 1,005 times</b>.<span class="fix">&#8627; addressed by <b>pxInstagram.profile</b>, <b>pxX.posts</b>, <b>pxLinkedin.job</b> and <b>pxGoogle.place</b></span></span></li>
-    <li><span class="n">1,660 h</span><span class="t">hand-writing page readers on these 26 sites, <b>a third of
-      every JavaScript hour</b> spent there, across 3,571 users.<span class="fix">&#8627; addressed by the 26 toolkits &mdash; <b>pxAmazon</b>, <b>pxFacebook</b>, <b>pxYoutube</b>, <b>pxZillow</b> and 22 more</span></span></li>
-    <li><span class="n">54 h</span><span class="t">re-running a script that already returned nothing.
-      <b>6,381 of 8,555 retries</b> came back empty a second time.<span class="fix">&#8627; addressed by the three-anchor contract &mdash; every reader returns <b>ok</b>, <b>empty</b> or <b>drift</b>, never a bare <b>[]</b> &mdash; section 2.3</span></span></li>
+    <li><span class="n">964 h</span><span class="t">spent running a script the agent had
+      <b>already written before</b> &mdash; the same characters, typed out again from scratch in a
+      new conversation. 134,403 calls, a fifth of all JavaScript time on these sites.<span
+      class="fix">&#8627; addressed by the <b>26 site toolkits</b> &mdash; 100 named readers shipped
+      with the browser</span></span></li>
+
+    <li><span class="n">105,144</span><span class="t">different scripts written to read just
+      <b>26 websites</b>. Not 105,144 different jobs &mdash; the same handful of jobs, spelled
+      105,144 ways. <b>98.8% were used in one conversation and deleted.</b><span class="fix">&#8627;
+      addressed by <b>execute_javascript(toolkit=&quot;&lt;site&gt;&quot;)</b> &mdash; written once,
+      versioned, reused</span></span></li>
+
+    <li><span class="n">9,421&times;</span><span class="t">One script that pulls the follower count,
+      bio and post count off an Instagram profile. <b>It is the same three fields every time</b>,
+      and it was re-written and re-run 9,421 times. The next three ran 3,197, 1,573 and 1,005
+      times.<span class="fix">&#8627; addressed by <b>pxInstagram.profile</b>, <b>pxX.posts</b>,
+      <b>pxLinkedin.job</b> and <b>pxGoogle.place</b></span></span></li>
+
+    <li><span class="n">1,660 h</span><span class="t">of typing <code>querySelector</code> chains at
+      these 26 sites and reading the results back &mdash; <b>a third of every JavaScript hour spent
+      there</b>, across 3,571 users.<span class="fix">&#8627; addressed by the 26 toolkits &mdash;
+      <b>pxAmazon</b>, <b>pxFacebook</b>, <b>pxYoutube</b>, <b>pxZillow</b> and 22
+      more</span></span></li>
+
+    <li><span class="n">54 h</span><span class="t">The script returned <code>[]</code>. The agent ran
+      <b>the exact same script again</b>. It returned <code>[]</code> again. 6,381 of 8,555 retries
+      went this way.<span class="fix">&#8627; addressed by the three-anchor contract &mdash; every
+      reader returns <b>ok</b>, <b>empty</b> or <b>drift</b>, never a bare <b>[]</b> &mdash;
+      section 2.3</span></span></li>
   </ul>
   <p class="basis">Jul 8 &ndash; Oct 8, 2026, the 26 head sites from section 1.2: 646,197 JavaScript calls,
   4,984 hours, 31,983 runs. Same measurement basis as above.</p>
